@@ -3,6 +3,7 @@ const consign = require('consign');
 app.set('port', process.env.PORT || 5000);
 consign()
   .then('./config/middleware.js')
+  .then('./config/firebase.js')
   .then('./api/controllers')
   .then('./api/routes')
   .into(app);
