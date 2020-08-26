@@ -42,6 +42,9 @@ module.exports = (app) => {
   const get = async (req, resp) => {
     getPayments('payments', db, req, resp);
   };
+  const ok = async (req, resp) => {
+    resp.send('OK!');
+  };
 
-  return { pay, get };
+  return { pay, get, ok };
 };
