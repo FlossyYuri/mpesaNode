@@ -7,8 +7,10 @@ const {
   registerTransaction,
   c2b,
 } = require('../utils/payment');
+const { getPayments } = require('../utils/fetch');
 module.exports = (app) => {
   const db = app.config.firebase;
+
   const pay = async (req, resp) => {
     initializeMpesa(mpesa, 'PRODUCTION');
     const data = { ...req.body };
@@ -38,19 +40,7 @@ module.exports = (app) => {
   };
 
   const get = async (req, resp) => {
-    const paymentsRef = db.collection('payments').orderBy('createdAt', 'desc');
-    if (req.query.channel)
-      paymentsRef.where('channel', '==', req.query.channel);
-    if (req.query.username)
-      paymentsRef.where('username', '==', req.query.username);
-    const snapshot = await paymentsRef.get();
-    const payments = [];
-    if (!snapshot.empty) snapshot.forEach((doc) => payments.push(doc.data()));
-    if (payments.length > 0) {
-      resp.status(200).json(payments);
-    } else {
-      resp.status(500).json(payments);
-    }
+    getPayments('payments', db, req, resp);
   };
 
   return { pay, get };

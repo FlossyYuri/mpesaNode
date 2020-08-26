@@ -7,6 +7,7 @@ const {
   registerTransaction,
   c2b,
 } = require('../utils/payment');
+const { getPayments } = require('../utils/fetch');
 module.exports = (app) => {
   const db = app.config.firebase;
   const pay = async (req, resp) => {
@@ -37,5 +38,9 @@ module.exports = (app) => {
     }
   };
 
-  return { pay };
+  const get = async (req, resp) => {
+    getPayments('tests', db, req, resp);
+  };
+
+  return { pay, get };
 };
