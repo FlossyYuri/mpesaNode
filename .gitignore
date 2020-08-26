@@ -37,6 +37,6 @@ build/Release
 # Dependency directories
 node_modules/
 .env
-*.lock
+# *.lock
 *lock.json
 .nyc_output
