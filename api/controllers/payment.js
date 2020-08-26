@@ -1,32 +1,57 @@
 const mpesa = require('mpesa-node-api');
+const {
+  initializeMpesa,
+  getTransaction,
+  successCase,
+  allErrorCases,
+  registerTransaction,
+  c2b,
+} = require('../utils/payment');
 module.exports = (app) => {
-  const pay = (req, resp) => {
-    mpesa.initializeApi({
-      origin: process.env.MPESA_ORIGIN,
-      baseUrl: process.env.MPESA_API_HOST,
-      apiKey: process.env.MPESA_API_KEY,
-      publicKey: process.env.MPESA_PUBLIC_KEY,
-      serviceProviderCode: process.env.MPESA_SERVICE_PROVIDER_CODE,
-    });
+  const db = app.config.firebase;
+  const pay = async (req, resp) => {
+    initializeMpesa(mpesa, 'PRODUCTION');
     const data = { ...req.body };
     if (data) {
-      mpesa
-        .initiate_c2b(
-          data.amount,
-          Number(`258${data.phone}`),
-          `TEST${Math.round(Math.random() * 100000000)}`,
-          `Test${Math.round(Math.random() * 100000000)}`
-        )
-        .then(function (response) {
-          resp.send(response);
-        })
-        .catch(function (error) {
-          resp.send(error);
-        });
+      const now = new Date().getTime().toString();
+      const transaction = getTransaction(data, now);
+      try {
+        const response = await c2b(mpesa, transaction);
+        transaction.id = response.output_TransactionID
+          ? `W${response.output_TransactionID}`
+          : `W${now}`;
+        transaction.status = response.output_ResponseCode;
+
+        successCase(resp, response);
+      } catch (error) {
+        transaction.id =
+          error.output_TransactionID || error.output_TransactionID === 'N/A'
+            ? `F${now}`
+            : error.output_TransactionID;
+        transaction.status = error.output_ResponseCode;
+        allErrorCases(resp, error);
+      }
+      registerTransaction(transaction, db, 'PRODUCTION');
     } else {
       resp.send('Sem dados');
     }
   };
 
-  return { pay };
+  const get = async (req, resp) => {
+    const paymentsRef = db.collection('payments').orderBy('createdAt', 'desc');
+    if (req.query.channel)
+      paymentsRef.where('channel', '==', req.query.channel);
+    if (req.query.username)
+      paymentsRef.where('username', '==', req.query.username);
+    const snapshot = await paymentsRef.get();
+    const payments = [];
+    if (!snapshot.empty) snapshot.forEach((doc) => payments.push(doc.data()));
+    if (payments.length > 0) {
+      resp.status(200).json(payments);
+    } else {
+      resp.status(500).json(payments);
+    }
+  };
+
+  return { pay, get };
 };
