@@ -1,8 +1,9 @@
 exports.getTransaction = (data, now) => {
   const channel = data.channel.toUpperCase();
   const username = data.username.toLowerCase();
+  const ref = channel.substring(0, 20 - now.length);
   return {
-    ref: `${channel}${now}`,
+    ref: `${ref}${now}`,
     thirdPartyRef: `${channel}${username}${now}`,
     amount: data.amount,
     phone: data.phone,
@@ -32,6 +33,7 @@ exports.initializeMpesa = (mpesa, mode) => {
 };
 
 exports.c2b = async (mpesa, transaction) => {
+  console.log(transaction);
   return await mpesa.initiate_c2b(
     transaction.amount,
     Number(`258${transaction.phone}`),
