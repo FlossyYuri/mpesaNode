@@ -15,7 +15,7 @@ exports.getPayments = async (collection, db, req, resp) => {
     }
     if (req.query.status) {
       if (req.query.status === 'success')
-        paymentsRef = paymentsRef.where('ok', '==', 'INS-0');
+        paymentsRef = paymentsRef.where('status', '==', 'INS-0');
     }
     snapshot = await paymentsRef.get();
   } catch (error) {

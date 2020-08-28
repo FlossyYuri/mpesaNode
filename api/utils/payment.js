@@ -33,7 +33,6 @@ exports.initializeMpesa = (mpesa, mode) => {
 };
 
 exports.c2b = async (mpesa, transaction) => {
-  console.log(transaction);
   return await mpesa.initiate_c2b(
     transaction.amount,
     Number(`258${transaction.phone}`),
