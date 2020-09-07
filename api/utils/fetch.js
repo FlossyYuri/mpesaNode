@@ -1,8 +1,9 @@
 const snapshotToArray = (snapshot) => {
-  const payments = [];
-  if (!snapshot.empty) snapshot.forEach((doc) => payments.push(doc.data()));
-  return payments;
+  const array = [];
+  if (!snapshot.empty) snapshot.forEach((doc) => array.push(doc.data()));
+  return array;
 };
+exports.snapshotToArray = snapshotToArray;
 exports.getPayments = async (collection, db, req, resp) => {
   let paymentsRef = db.collection(collection);
   let snapshot;

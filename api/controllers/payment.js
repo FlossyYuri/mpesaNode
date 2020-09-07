@@ -9,7 +9,7 @@ const {
 } = require('../utils/payment');
 const { getPayments } = require('../utils/fetch');
 module.exports = (app) => {
-  const db = app.config.firebase;
+  const db = app.db;
 
   const pay = async (req, resp) => {
     initializeMpesa(mpesa, 'PRODUCTION');
