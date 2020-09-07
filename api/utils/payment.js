@@ -5,7 +5,7 @@ exports.getTransaction = (data, now) => {
   return {
     ref: `${ref}${now}`,
     thirdPartyRef: `${channel}${username}${now}`,
-    amount: data.amount,
+    amount: Number(data.amount),
     phone: data.phone,
     channel,
     username,

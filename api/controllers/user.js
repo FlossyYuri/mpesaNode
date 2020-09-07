@@ -1,7 +1,11 @@
 const jwt = require('jwt-simple');
 const bcrypt = require('bcrypt');
 const saltRounds = 5;
-const { snapshotToArray } = require('../utils/fetch');
+const {
+  snapshotToArray,
+  getPaymentsV2,
+  sumAmounts,
+} = require('../utils/fetch');
 module.exports = (app) => {
   const db = app.db;
 
@@ -52,10 +56,32 @@ module.exports = (app) => {
         });
     });
   };
+
+  const getTotalAmount = async (channel) => {
+    const payments = await getPaymentsV2('payments', db, channel, 'success');
+    return payments.reduce(sumAmounts, 0);
+  };
+
+  const getWithdrawedAmount = async (email) => {
+    const withdraws = snapshotToArray(
+      await db.collection('withdraws').where('email', '==', email).get()
+    );
+    return withdraws.reduce(sumAmounts, 0);
+  };
+
+  const getCredit = async (req, resp) => {
+    const { channel, email } = req.user;
+    const totalAmount = await getTotalAmount(channel);
+    const withdrawedAmount = await getWithdrawedAmount(email);
+    resp.json({ credit: totalAmount - withdrawedAmount });
+  };
+  const getTotal = async (req, resp) => {
+    const { channel } = req.user;
+    resp.json({ total: await getTotalAmount(channel) });
+  };
   const update = async (req, resp) => {
-    const data = { ...req.body };
     resp.send('Sem dados');
   };
 
-  return { login, register, update };
+  return { login, register, update, getCredit, getTotal };
 };
