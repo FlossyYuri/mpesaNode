@@ -1,6 +1,10 @@
 {
   "name": "mpesa-backend",
   "version": "1.0.0",
+  "engines": {
+    "node": "14.20.0",
+    "yarn": "1.22.11"
+  },
   "description": "",
   "main": "index.js",
   "scripts": {
