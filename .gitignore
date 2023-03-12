@@ -40,3 +40,5 @@ node_modules/
 # *.lock
 *lock.json
 .nyc_output
+.well-known
+cgi-bin
