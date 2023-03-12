@@ -11,6 +11,17 @@ admin.initializeApp({
 const db = admin.firestore();
 app.db = db;
 
+const log4js = require('log4js');
+
+log4js.configure({
+  appenders: { everything: { type: 'file', filename: 'logs.log' } },
+  categories: { default: { appenders: ['everything'], level: 'ALL' } }
+});
+
+const logger = log4js.getLogger();
+
+app.use(log4js.connectLogger(logger, { level: 'auto' }));
+
 consign()
   .include('./config/passport.js')
   .then('./config/middleware.js')
@@ -21,3 +32,4 @@ consign()
 app.listen(process.env.PORT || 5000, () => {
   console.log('Backend executando...');
 });
+
