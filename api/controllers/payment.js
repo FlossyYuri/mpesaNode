@@ -7,8 +7,6 @@ const {
   registerTransaction,
   c2b,
 } = require('../utils/payment');
-const SibApiV3Sdk = require('sib-api-v3-sdk');
-SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = process.env.SIB_APIKEY;
 const { getPayments } = require('../utils/fetch');
 module.exports = (app) => {
   const db = app.db;
@@ -52,31 +50,31 @@ module.exports = (app) => {
           ? `W${response.output_TransactionID}`
           : `W${now}`;
         transaction.status = response.output_ResponseCode;
-        new SibApiV3Sdk.TransactionalEmailsApi().sendTransacEmail({
+        // new SibApiV3Sdk.TransactionalEmailsApi().sendTransacEmail({
 
-          "sender": { "email": "contacto@flossyyuri.com", "name": "FL Digital" },
-          "subject": `${data.fullName}, Sua compra do ebook 'Receitas Para Emagrecer' foi aprovada!`,
-          "templateId": 3,
-          "params": {
-            "FIRSTNAME": data.fullName,
-            "fullName": data.fullName,
-          },
-          "messageVersions": [
-            {
-              "to": [
-                {
-                  "email": data.email,
-                  "name": data.fullName
-                },
-              ],
-            },
-          ]
+        //   "sender": { "email": "contacto@flossyyuri.com", "name": "FL Digital" },
+        //   "subject": `${data.fullName}, Sua compra do ebook 'Receitas Para Emagrecer' foi aprovada!`,
+        //   "templateId": 3,
+        //   "params": {
+        //     "FIRSTNAME": data.fullName,
+        //     "fullName": data.fullName,
+        //   },
+        //   "messageVersions": [
+        //     {
+        //       "to": [
+        //         {
+        //           "email": data.email,
+        //           "name": data.fullName
+        //         },
+        //       ],
+        //     },
+        //   ]
 
-        }).then(function (data) {
-          console.log(data);
-        }, function (error) {
-          console.error(error);
-        });
+        // }).then(function (data) {
+        //   console.log(data);
+        // }, function (error) {
+        //   console.error(error);
+        // });
         successCase(resp, response);
       } catch (error) {
         transaction.id =
