@@ -11,14 +11,34 @@ admin.initializeApp({
 const db = admin.firestore();
 app.db = db;
 
-const log4js = require('log4js');
+const winston = require('winston');
 
-log4js.configure({
-  appenders: { everything: { type: 'file', filename: 'logs.log' } },
-  categories: { default: { appenders: ['everything'], level: 'ALL' } }
+// Create a logger for application errors
+const errorLogger = winston.createLogger({
+  transports: [
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error'
+    })
+  ]
 });
 
-const logger = log4js.getLogger();
+// Create a middleware function for catching errors and logging them
+function logErrors(err, req, res, next) {
+  // Log the error to the error logger
+  errorLogger.error(err);
+
+  // Pass the error to the next middleware
+  next(err);
+}
+
+// Use the middleware function to catch and log errors in your application
+app.use(logErrors);
+
+// Example route that throws an error
+app.get('/', (req, res) => {
+  throw new Error('Something went wrong!');
+});
 
 consign()
   .include('./config/passport.js')

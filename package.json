@@ -25,12 +25,12 @@
     "express-validator": "^6.6.1",
     "firebase-admin": "^9.1.1",
     "jwt-simple": "^0.5.6",
-    "log4js": "^6.9.1",
     "mongoose": "^5.10.0",
     "mpesa-node-api": "^1.1.0",
     "nodemon": "^2.0.4",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "sib-api-v3-sdk": "^8.4.2"
+    "sib-api-v3-sdk": "^8.4.2",
+    "winston": "^3.8.2"
   }
 }
