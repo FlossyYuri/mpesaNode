@@ -20,8 +20,6 @@ log4js.configure({
 
 const logger = log4js.getLogger();
 
-app.use(log4js.connectLogger(logger, { level: 'everything' }));
-
 consign()
   .include('./config/passport.js')
   .then('./config/middleware.js')
