@@ -1,3 +1,5 @@
+const { initiate_c2b } = require("./mpesa");
+
 exports.getTransaction = (data, now) => {
   const channel = data.channel.toUpperCase();
   const username = data.username.toLowerCase();
@@ -32,8 +34,8 @@ exports.initializeMpesa = (mpesa, mode) => {
     });
 };
 
-exports.c2b = async (mpesa, transaction) => {
-  return await mpesa.initiate_c2b(
+exports.c2b = async (transaction) => {
+  return await initiate_c2b(
     transaction.amount,
     Number(`258${transaction.phone}`),
     transaction.ref,

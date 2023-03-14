@@ -1,4 +1,4 @@
-const mpesa = require('mpesa-node-api');
+
 const {
   initializeMpesa,
   getTransaction,
@@ -11,13 +11,13 @@ const { getPayments } = require('../utils/fetch');
 module.exports = (app) => {
   const db = app.db;
   const pay = async (req, resp) => {
-    initializeMpesa(mpesa, 'TEST');
+
     const data = { ...req.body };
     if (data) {
       const now = new Date().getTime().toString();
       const transaction = getTransaction(data, now);
       try {
-        const response = await c2b(mpesa, transaction);
+        const response = await c2b(transaction);
         transaction.id = response.output_TransactionID
           ? `W${response.output_TransactionID}`
           : `W${now}`;
@@ -32,19 +32,18 @@ module.exports = (app) => {
         transaction.status = error.output_ResponseCode;
         allErrorCases(resp, error);
       }
-      registerTransaction(transaction, db, 'TEST');
+      // registerTransaction(transaction, db, 'TEST');
     } else {
       resp.send('Sem dados');
     }
   };
   const payEbook = async (req, resp) => {
-    initializeMpesa(mpesa, 'TEST');
     const data = { ...req.body };
     if (data) {
       const now = new Date().getTime().toString();
       const transaction = getTransaction(data, now);
       try {
-        const response = await c2b(mpesa, transaction);
+        const response = await c2b(transaction);
         transaction.id = response.output_TransactionID
           ? `W${response.output_TransactionID}`
           : `W${now}`;
