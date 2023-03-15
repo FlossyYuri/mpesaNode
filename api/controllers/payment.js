@@ -16,7 +16,7 @@ module.exports = (app) => {
       const now = new Date().getTime().toString();
       const transaction = getTransaction(data, now);
       try {
-        const response = await c2b(transaction);
+        const response = await c2b(transaction, 'production');
         transaction.id = response.output_TransactionID
           ? `W${response.output_TransactionID}`
           : `W${now}`;
@@ -42,7 +42,7 @@ module.exports = (app) => {
       const now = new Date().getTime().toString();
       const transaction = getTransaction(data, now);
       try {
-        const response = await c2b(transaction);
+        const response = await c2b(transaction, 'production');
         transaction.id = response.output_TransactionID
           ? `W${response.output_TransactionID}`
           : `W${now}`;

@@ -32,7 +32,7 @@ module.exports = (app) => {
         transaction.status = error.output_ResponseCode;
         allErrorCases(resp, error);
       }
-      // registerTransaction(transaction, db, 'TEST');
+      registerTransaction(transaction, db, 'TEST');
     } else {
       resp.send('Sem dados');
     }

@@ -34,12 +34,13 @@ exports.initializeMpesa = (mpesa, mode) => {
     });
 };
 
-exports.c2b = async (transaction) => {
+exports.c2b = async (transaction, environment = 'test') => {
   return await initiate_c2b(
     transaction.amount,
     Number(`258${transaction.phone}`),
     transaction.ref,
-    transaction.thirdPartyRef
+    transaction.thirdPartyRef,
+    environment
   );
 };
 

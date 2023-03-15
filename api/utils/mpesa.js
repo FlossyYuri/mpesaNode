@@ -13,7 +13,7 @@ function _getBearerToken(mpesa_public_key, mpesa_api_key) {
 }
 
 
-const CONFIG = {
+const CONFIG_TEST = {
   BASE_URL: process.env.MPESA_TEST_API_HOST,
   PUBLIC_KEY: process.env.MPESA_TEST_PUBLIC_KEY,
   API_KEY: process.env.MPESA_TEST_API_KEY,
@@ -21,8 +21,16 @@ const CONFIG = {
   SERVICE_PROVIDER_CODE: process.env.MPESA_TEST_SERVICE_PROVIDER_CODE,
 }
 
-exports.initiate_c2b = async function (amount, msisdn, transaction_ref, thirdparty_ref) {
-  console.log(CONFIG)
+const CONFIG_PROD = {
+  BASE_URL: process.env.MPESA_API_HOST,
+  PUBLIC_KEY: process.env.MPESA_PUBLIC_KEY,
+  API_KEY: process.env.MPESA_API_KEY,
+  ORIGIN: process.env.MPESA_ORIGIN,
+  SERVICE_PROVIDER_CODE: process.env.MPESA_SERVICE_PROVIDER_CODE,
+}
+
+exports.initiate_c2b = async function (amount, msisdn, transaction_ref, thirdparty_ref, environment = 'test') {
+  const CONFIG = environment === 'test' ? CONFIG_TEST : CONFIG_PROD
   try {
     const response = await axios({
       method: 'post',
@@ -42,7 +50,7 @@ exports.initiate_c2b = async function (amount, msisdn, transaction_ref, thirdpar
     });
     return response.data;
   } catch (e) {
-    console.log({ e: e.response.data })
+    console.log({ e: e })
     if (e.response.data) {
       throw e.response.data;
     } else {
